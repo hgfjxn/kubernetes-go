@@ -1,0 +1,6 @@
+---
+- hosts: k8
+  remote_user: root
+  tasks:
+  - name: start docker service
+    systemd: name=docker enabled=true state=started

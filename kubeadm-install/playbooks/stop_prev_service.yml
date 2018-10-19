@@ -1,0 +1,15 @@
+- hosts: k8s
+  remote_user: root
+  tasks:
+  - name: stop flannel network
+    systemd: name=flanneld enabled=false state=stopped
+  - name: stop kubectl
+    systemd: name=kubectl enabled=false state=stopped
+  - name: stop kube-proxy
+    systemd: name=kube-peoxy enabled=false state=stopped
+  - name: stop kubernetes apiservice
+    service: name=kube-apiserver enabled=yes state=stopped
+  - name: stop kube-controller-manager
+    service: name=kube-controller-manager enabled=yes state=stopped
+  - name: stop kube-scheduler
+    service: name=kube-scheduler enabled=yes state=stopped

@@ -1,0 +1,24 @@
+---
+- hosts: k8
+  remote_user: root
+  vars:
+  - DOCKER_CONFIG: /etc/sysconfig/docker
+  tasks:
+  - name: restore docker config
+    copy: remote_src=yes src=/root/docker dest=/etc/sysconfig/docker
+  - name: create docker group 
+    group: name=docker state=present
+  - name: create docker user
+    user: name=docker group=docker append=yes
+  - name: update docker selinux options
+    shell: sed -i "s/\(OPTIONS='--selinux-enabled\)\( --log-driver=journald --signature-verification=false'\)/\1=false\2/" {{ DOCKER_CONFIG }}
+  - name: repair docker no credential on request 
+    yum: pkg=*rhsm* state=latest
+  - name: install wget
+    yum: pkg=wget state=latest
+  - name: download pakacge
+    shell: wget http://mirror.centos.org/centos/7/os/x86_64/Packages/python-rhsm-certificates-1.19.10-1.el7_4.x86_64.rpm -P /tmp/
+  - name: reparing
+    shell: rpm2cpio /tmp/python-rhsm-certificates-1.19.10-1.el7_4.x86_64.rpm | cpio -iv --to-stdout ./etc/rhsm/ca/redhat-uep.pem | tee /etc/rhsm/ca/redhat-uep.pem
+  - name: start docker engine
+    service: name=docker state=started enabled=yes

@@ -1,0 +1,40 @@
+---
+- hosts: master
+  remote_user: root
+  vars:
+  - FLANNEL_ETCD_PRE: /atomic.io/network
+  tasks:
+  - name: insert or update etcd data
+    shell: "etcdctl set {{ FLANNEL_ETCD_PRE }}/config '{\"Network\": \"10.1.0.0/16\"}'"
+- hosts: k8
+  remote_user: root
+  vars:
+  - FLANNEL_CONFIG: /etc/sysconfig/flanneld
+  - FLANNEL_ETCD_PRE: /atomic.io/network
+  - master: 10.20.13.24
+  tasks:
+  - name: install net-tools
+    yum: pkg=net-tools state=latest
+  - name: install flannel package
+    yum: pkg=flannel state=latest
+  - name: make soft link of mk-docker-opts
+    file: src=/usr/libexec/flannel/mk-docker-opts.sh dest=/usr/bin/mk-docker-opts.sh state=link
+  - name: stop docker service
+    service: name=docker state=stopped
+  - name: update flannel config
+    lineinfile: path={{ FLANNEL_CONFIG }} backrefs=yes backup=yes regexp="^FLANNEL_ETCD_ENDPOINTS=\"http:\/\/127.0.0.1:2379\"$" line="FLANNEL_ETCD_ENDPOINTS=\"http:\/\/{{ master }}:2379\""
+  - name: update flannel etcd prefix
+    lineinfile:
+      path: "{{FLANNEL_CONFIG}}"
+      backrefs: yes
+      backup: yes
+      regexp: "FLANNEL_ETCD_PREFIX=\".*?\""
+      line: "FLANNEL_ETCD_PREFIX=\"{{ FLANNEL_ETCD_PRE }}\""
+  - name: start flannel service
+    service: name=flanneld state=restarted enabled=yes
+  - name: init flannel network subnet config env
+    shell: mk-docker-opts.sh -i
+  - name: active flannel subnet and update docker0 config
+    shell: "source /run/flannel/subnet.env && ifconfig docker0 ${FLANNEL_SUBNET}"
+  - name: start docker service
+    service: name=docker state=started enabled=yes

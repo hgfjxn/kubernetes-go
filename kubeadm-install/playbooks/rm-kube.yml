@@ -1,0 +1,6 @@
+---
+- hosts: k8
+  remote_user: root
+  tasks:
+  - name: rm kube executable files
+    shell: rpm -e kubernetes-1.5.2-0.7.git269f928.el7.x86_64  kubernetes-node-1.5.2-0.7.git269f928.el7.x86_64 kubernetes-master-1.5.2-0.7.git269f928.el7.x86_64  kubernetes-client-1.5.2-0.7.git269f928.el7.x86_64

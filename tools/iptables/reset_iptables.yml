@@ -1,0 +1,8 @@
+---
+- hosts: k8
+  remote_user: root
+  tasks:
+  - name: copy shell script to remote /tmp
+    copy: src=reset_iptables.sh dest=/tmp/reset_iptables.sh
+  - name: execute reset shell script
+    shell: sh /tmp/reset_iptables.sh

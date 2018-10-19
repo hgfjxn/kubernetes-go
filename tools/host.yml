@@ -1,0 +1,6 @@
+---
+- hosts: k8
+  remote_user: root
+  tasks:
+  - name: update hosts
+    copy: src=/etc/hosts dest=/etc/hosts backup=yes

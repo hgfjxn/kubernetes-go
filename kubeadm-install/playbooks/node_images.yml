@@ -1,0 +1,8 @@
+---
+- hosts: slave
+  remote_user: root
+  tasks:
+  - name: copy pull-images-nodes.sh to remote nodes
+    copy: src=../pull-images-nodes.sh dest=/tmp/pull-images-nodes.sh
+  - name: pull images for node
+    shell: sh /tmp/pull-images-nodes.sh

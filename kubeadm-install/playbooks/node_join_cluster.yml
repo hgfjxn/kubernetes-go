@@ -1,0 +1,8 @@
+---
+- hosts: slave
+  remote_user: root
+  tasks:
+  - name: copy node_join_cluster.sh to slaves 
+    copy: src=../node_join_cluster.sh dest=/tmp/node_join_cluster.sh
+  - name: node join cluster starting
+    shell: sh /tmp/node_join_cluster.sh
