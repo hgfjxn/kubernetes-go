@@ -8,10 +8,10 @@
 
 | IP | 系统版本 | 角色 | Hostname |
 | --- | --- | --- | --- |
-| 10.20.13.24 | Centos7 64位 | master | kuber24 |
-| 10.20.13.25 | Centos7 64位 | work | Kuber25 |
-| 10.20.13.26 | Centos7 64位 | work | Kuber26 |
-| 10.20.13.27 | Centos7 64位 | work | Kuber27 |
+| 10.20.13.24 | Centos7 64位 minimal | master | kuber24 |
+| 10.20.13.25 | Centos7 64位 minimal | work | Kuber25 |
+| 10.20.13.26 | Centos7 64位 minimal | work | Kuber26 |
+| 10.20.13.27 | Centos7 64位 minimal | work | Kuber27 |
 
 ### 修改host
  ansible 脚本,hostname = kuber[ip最后8位]：
@@ -32,7 +32,8 @@
 linux 命令：
 
 ```shell
-
+service firewalld stop
+systemctl disable firewalld
 ```
 
 ansible playbook
@@ -97,6 +98,8 @@ ansible playbook
     shell: sysctl --system
 ```
 
+> 此ansible-playbook需要先执行前面的linux命令，保证`/etc/sysctl.d/k8s.conf`的存在。
+
 
 ### 设置yum源
 
@@ -128,7 +131,7 @@ ansible playbook
     copy: src='/etc/yum.repos.d/kubernetes.repo' dest='/etc/yum.repos.d/kubernetes.repo'
 ```
 
-
+> 此ansible-playbook需要先执行前面的linux命令，保证`/etc/yum.repos.d/kubernetes.repo`的存在。
 
 
 ### 安装必备工具
