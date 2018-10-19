@@ -13,3 +13,4 @@ my humble experience about kubernetes
 
 1. [kubernetes 官方文档](https://kubernetes.io/docs/home/?path=browse)
 2. [ 博客：小狼的世界](https://www.cnblogs.com/cocowool/category/1272795.html)
+2. [优秀的kubernetes gitbook](https://jimmysong.io/kubernetes-handbook/practice/master-installation.html)
