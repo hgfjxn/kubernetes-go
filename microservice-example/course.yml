@@ -1,0 +1,171 @@
+# -------------- message Service ---------------------
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: message-service
+  labels:
+    app: message-service
+    project: course
+spec:
+  selector:
+    app: message-service
+  type: ClusterIP
+  ports:
+    - port: 9090
+      protocol: TCP
+      targetPort: 9090
+
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: message-service-deployment
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: message-service
+        project: course
+    spec:
+      containers:
+        - name: message-service
+          image: core.harbor.domain/example/message-service:latest
+          ports:
+            - containerPort: 9090
+
+---
+
+
+# ---------------- user service --------------------
+
+--- 
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+  labels:
+    app: user-service
+    project: course
+spec:
+  type: ClusterIP
+  selector:
+    app: user-service
+  ports:
+    - name: user-edge-service
+      port: 8888
+      protocol: TCP
+      targetPort: 8888
+    - name: user-service
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: user-service-deployment
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: user-service
+        project: course
+    spec:
+      containers:
+        - name: user-service
+          image: core.harbor.domain/example/user-service:latest
+          ports:
+            - containerPort: 8080
+        - name: user-edge-service
+          image: core.harbor.domain/example/user-edge-service:latest
+          ports:
+            - containerPort: 8888
+---
+
+
+# ------------------ course service --------------------
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: course-service
+  labels:
+    app: course-service
+    project: course
+spec:
+  type: ClusterIP
+  selector:
+    app: course-service
+  ports:
+    - port: 9966
+      protocol: TCP
+      targetPort: 9966
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: course-service-deployment
+spec:
+  template:
+    metadata:
+      labels:
+        app: course-service
+        project: course
+    spec:
+      containers:
+        - name: course-service
+          image: core.harbor.domain/example/course-service:latest
+          ports:
+          - containerPort: 9999
+        - name: course-edge-service
+          image: core.harbor.domain/example/course-edge-service:latest
+          ports:
+            - containerPort: 9966
+
+
+# --------------- Api gateway -----------------------
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: api-gateway
+    project: course
+  name: api-gateway
+spec:
+  selector: 
+    app: api-gateway
+  type: NodePort
+  ports:
+    - port: 10000     #internal service port
+      protocol: TCP
+      targetPort: 10000  #Pod traffic port, container port
+      nodePort: 31000    #external service port
+
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: api-gateway-deployment
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+        project: course
+    spec:
+      containers:
+        - name: api-gateway
+          image: core.harbor.domain/example/api-gateway:latest
+          ports:
+            - containerPort: 10000
+
+---
+
