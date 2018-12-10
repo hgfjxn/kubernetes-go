@@ -1,0 +1,26 @@
+---
+- hosts: slave
+  remote_user: root
+  tasks:
+    - name: install gluster fs package
+      yum: pkg=centos-release-gluster state=latest
+    - name: install gluster fs - glusterfs-server package
+      yum: pkg=glusterfs-server state=latest
+    - name: install gluster fs - glusterfs-rdma package
+      yum: pkg=glusterfs-rdma state=latest
+    - name: install gluster fs - glusterfs-fuse package
+      yum: pkg=glusterfs-fuse state=latest
+    - name: start gluster service even when reboot
+      service: name=glusterd state=started enabled=yes
+    - name: create gluster phisical storage
+      file: path=/home/gluster state=directory owner=root group=root recurse=yes
+
+- hosts: kuber25
+  remote_user: root
+  tasks:
+    - name: add peer
+      shell: gluster peer probe kuber25 && gluster peer probe kuber26 && gluster peer probe kuber27 && echo "wait for peer added for 10 seconds" && sleep 10
+    - name: create volume
+      shell: gluster volume create models replica 2 kuber25:/home/gluster kuber26:/home/gluster kuber27:/home/gluster 
+    - name: start volume *models*
+      shell: gluster volume start models
