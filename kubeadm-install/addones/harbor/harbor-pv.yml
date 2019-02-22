@@ -1,0 +1,81 @@
+# ---------------------harbor PV -------------------------
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: harbor1-pv
+  namespace: kube-public
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 100Gi
+  persistentVolumeReclaimPolicy: Recycle
+  hostPath:
+    path: /home/harbor/1
+    type: DirectoryOrCreate
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: harbor2-pv
+  namespace: kube-public
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 100Gi
+  persistentVolumeReclaimPolicy: Recycle
+  hostPath:
+    path: /home/harbor/2
+    type: DirectoryOrCreate
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: harbor3-pv
+  namespace: kube-public
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 100Gi
+  persistentVolumeReclaimPolicy: Recycle
+  hostPath:
+    path: /home/harbor/3
+    type: DirectoryOrCreate
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: harbor4-pv
+  namespace: kube-public
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 100Gi
+  persistentVolumeReclaimPolicy: Recycle
+  hostPath:
+    path: /home/harbor/4
+    type: DirectoryOrCreate
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: harbor5-pv
+  namespace: kube-public
+spec:
+  accessModes:
+    - ReadWriteOnce
+  capacity:
+    storage: 100Gi
+  persistentVolumeReclaimPolicy: Recycle
+  hostPath:
+    path: /home/harbor/5
+    type: DirectoryOrCreate

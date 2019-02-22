@@ -1,0 +1,6 @@
+---
+- hosts: slave
+  remote_user: root
+  tasks:
+    - name: stop gluster service
+      service: name=glusterd state=stopped enabled=no

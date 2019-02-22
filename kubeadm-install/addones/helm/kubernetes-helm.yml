@@ -1,0 +1,61 @@
+# ------------------------Tiler ServiceAccount ----------------------------
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: tiller
+  namespace: helm-system
+
+# ----------------------Tiler deployment namespace--------------------------
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: tiller-manager
+  namespace: kube-public
+rules:
+- apiGroups: ["", "extensions", "apps"]
+  resources: ["*"]
+  verbs: ["*"]
+
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: tiller-binding
+  namespace: kube-public
+subjects:
+- kind: ServiceAccount
+  name: tiller
+  namespace: helm-system
+roleRef:
+  kind: Role
+  name: tiller-manager
+  apiGroup: rbac.authorization.k8s.io
+
+# -------------------------Tiler system namespace ----------------------------
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: helm-system
+  name: tiller-manager
+rules:
+- apiGroups: ["", "extensions", "apps"]
+  resources: ["configmaps"]
+  verbs: ["*"]
+
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: tiller-binding
+  namespace: helm-system
+subjects:
+- kind: ServiceAccount
+  name: tiller
+  namespace: helm-system
+roleRef:
+  kind: Role
+  name: tiller-manager
+  apiGroup: rbac.authorization.k8s.io
