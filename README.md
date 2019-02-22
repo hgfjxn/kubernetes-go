@@ -16,3 +16,5 @@ my humble experience about kubernetes
 3. [优秀的kubernetes gitbook](https://jimmysong.io/kubernetes-handbook/practice/master-installation.html)
 4. [helm: kubernetes的包管理工具](https://helm.sh)
 5. [terraform: 代码管理资源](https://www.terraform.io)
+6. [kubernetes 官方最佳实践youtube视频](https://github.com/hgfjxn/kubernetes-go.git)
+7. [tgik kubernetes](https://www.youtube.com/playlist?list=PLvmPtYZtoXOENHJiAQc6HmV2jmuexKfrJ)
